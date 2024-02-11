@@ -10,8 +10,3 @@ useEffect(() => {
 
 {/* Load and display the car model */}
 <primitive position={[0, -1, 0]} object={scene} scale={1} />
-
-
-
-
-
