@@ -3,23 +3,33 @@ import Experience from "./components/Experience";
 import { Canvas } from "@react-three/fiber";
 import { Perf } from "r3f-perf";
 import { OrbitControls } from "@react-three/drei";
+import { KeyboardControls } from "@react-three/drei";
 
 const App = () => {
   return (
     <>
-      <Canvas
-        shadows
-        camera={{
-          fov: 45,
-          near: 0.1,
-          far: 200,
-          position: [2.5, 4, 6],
-        }}
+      <KeyboardControls
+        map={[
+          { name: "forward", keys: ["ArrowUp"] },
+          { name: "backward", keys: ["ArrowDown"] },
+          { name: "leftward", keys: ["ArrowLeft"] },
+          { name: "rightward", keys: ["ArrowRight"] },
+        ]}
       >
-        <OrbitControls makeDefault />
-        <Perf />
-        <Experience/>    
-      </Canvas>
+        <Canvas
+          shadows
+          camera={{
+            fov: 45,
+            near: 0.1,
+            far: 200,
+            position: [2.5, 4, 6],
+          }}
+        >
+          <OrbitControls makeDefault />
+          <Perf />
+          <Experience />
+        </Canvas>
+      </KeyboardControls>
     </>
   );
 };
