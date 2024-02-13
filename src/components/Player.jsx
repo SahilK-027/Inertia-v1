@@ -20,8 +20,7 @@ const Player = () => {
     const { forward, backward, leftward, rightward } = getKeys();
     const impulse = { x: 0, y: 0, z: 0 };
 
-    const velocity = 8;
-    const impulseStrength = velocity * delta;
+    const impulseStrength = 1 * delta;
 
     if (forward === true) {
       impulse.z -= impulseStrength;
@@ -31,22 +30,6 @@ const Player = () => {
       impulse.z += impulseStrength;
     }
 
-    if (rightward === true && forward === true) {
-      impulse.x += impulseStrength;
-    }
-
-    if (leftward === true && forward === true) {
-      impulse.x -= impulseStrength;
-    }
-
-    if (rightward === true && backward === true) {
-      impulse.x += impulseStrength;
-    }
-
-    if (leftward === true && backward === true) {
-      impulse.x -= impulseStrength;
-    }
-
     body.current.applyImpulse(impulse);
   });
 
@@ -54,19 +37,16 @@ const Player = () => {
     <>
       <RigidBody
         position={[0, 1, 0]}
-        colliders="hull"
+        colliders="ball"
         restitution={0.2}
         friction={1}
         canSleep={false}
         ref={body}
-        mass={1000}
       >
-        <primitive
-          position={[0, 0, 0]}
-          object={scene}
-          scale={0.5}
-          rotation={[0, Math.PI / 2, 0]}
-        />
+        <mesh castShadow>
+          <icosahedronGeometry args={[0.3, 1]} />
+          <meshStandardMaterial flatShading color="mediumpurple" />
+        </mesh>
       </RigidBody>
     </>
   );
