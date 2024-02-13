@@ -8,7 +8,7 @@ export default function Experience() {
     <>
       <Lights />
       <Physics debug>
-        <Level />
+        <Level obstacleCount={5}/>
       </Physics>
     </>
   );

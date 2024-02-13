@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import * as THREE from "three";
-import { RigidBody } from "@react-three/rapier";
+import { CuboidCollider, RigidBody } from "@react-three/rapier";
 import { useGLTF } from "@react-three/drei";
 
 const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
@@ -48,15 +48,8 @@ const BlockEnd = ({ positionProp = [0, 0, 0] }) => {
         scale={[blockSize, blockHeight, blockSize]}
         material={floor1Material}
       ></mesh>
-      <RigidBody 
-        type="fixed" colliders="hull" 
-        restitution={0.2} friction={0}
-      >
-        <primitive 
-          position={[0, 0, 0]} 
-          object={scene} 
-          scale={0.025} 
-        />
+      <RigidBody type="fixed" colliders="hull" restitution={0.2} friction={0}>
+        <primitive position={[0, 0, 0]} object={scene} scale={0.025} />
       </RigidBody>
     </group>
   );
@@ -95,24 +88,72 @@ const BlockObstacle = ({ positionProp = [0, 0, 0], obstaclePosition }) => {
   );
 };
 
-const Level = () => {
-  const zAxisShift = 4;
+const Walls = ({ length }) => {
   return (
     <>
-      <BlockStart positionProp={[0, 0, zAxisShift * 4]} />
-      <BlockObstacle
-        positionProp={[0, 0, zAxisShift * 3]}
-        obstaclePosition={"right"}
-      />
-      <BlockObstacle
-        positionProp={[0, 0, zAxisShift * 2]}
-        obstaclePosition={"left"}
-      />
-      <BlockObstacle
-        positionProp={[0, 0, zAxisShift * 1]}
-        obstaclePosition={"right"}
-      />
-      <BlockEnd positionProp={[0, 0, zAxisShift * 0]} />
+      <RigidBody type="fixed" restitution={0.2} friction={0}>
+        {/* Right Wall */}
+        <mesh
+          position={[2.15, 0.75, -(length * 2) + 2]}
+          geometry={boxGeometry}
+          material={wallMaterial}
+          scale={[0.3, 1.5, 4 * length]}
+          castShadow
+        />
+        {/* Left Wall */}
+        <mesh
+          position={[-1 * 2.15, 0.75, -(length * 2) + 2]}
+          geometry={boxGeometry}
+          material={wallMaterial}
+          scale={[0.3, 1.5, 4 * length]}
+          receiveShadow
+        />
+        {/* End Wall */}
+        <mesh
+          position={[0, 0.75, -(length * 4) + 2]}
+          geometry={boxGeometry}
+          material={wallMaterial}
+          scale={[4, 1.5, 0.3]}
+          receiveShadow
+        />
+        <CuboidCollider
+          args={[2, 0.1, 2 * length]}
+          position={[0, -0.1, -(length * 2) + 2]}
+          restitution={0.2}
+          friction={1}
+        />
+      </RigidBody>
+    </>
+  );
+};
+
+const Level = ({ obstacleCount = 5 }) => {
+  const zAxisShift = 4;
+
+  const blocksArray = useMemo(() => {
+    const blocks = [];
+    for (let i = 1; i <= obstacleCount; i++) {
+      const position = [0, 0, -i * zAxisShift];
+      blocks.push(
+        <BlockObstacle
+          key={i}
+          positionProp={position}
+          obstaclePosition={i % 2 === 0 ? "left" : "right"}
+        />
+      );
+    }
+    return blocks;
+  }, [obstacleCount]);
+
+  return (
+    <>
+      <BlockStart positionProp={[0, 0, 0]} />
+      {blocksArray.map((Block, index) => (
+        // Render individual BlockObstacle elements directly
+        <React.Fragment key={index}>{Block}</React.Fragment>
+      ))}
+      <BlockEnd positionProp={[0, 0, -1 * (obstacleCount + 1) * zAxisShift]} />
+      <Walls length={obstacleCount + 2} />
     </>
   );
 };
