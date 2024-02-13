@@ -19,18 +19,33 @@ const Player = () => {
   useFrame((state, delta) => {
     const { forward, backward, leftward, rightward } = getKeys();
     const impulse = { x: 0, y: 0, z: 0 };
+    const torque = { x: 0, y: 0, z: 0 };
 
-    const impulseStrength = 1 * delta;
+    const impulseStrength = 0.6 * delta;
+    const torqueStrength = 0.2 * delta;
 
     if (forward === true) {
       impulse.z -= impulseStrength;
+      torque.x -= torqueStrength;
     }
 
     if (backward === true) {
       impulse.z += impulseStrength;
+      torque.x += torqueStrength;
+    }
+
+    if (rightward === true) {
+      impulse.x += impulseStrength;
+      torque.z -= torqueStrength;
+    }
+
+    if (leftward === true) {
+      impulse.x -= impulseStrength;
+      torque.z += torqueStrength;
     }
 
     body.current.applyImpulse(impulse);
+    body.current.applyTorqueImpulse(torque);
   });
 
   return (
@@ -42,6 +57,8 @@ const Player = () => {
         friction={1}
         canSleep={false}
         ref={body}
+        linearDamping={0.5}
+        angularDamping={0.5}
       >
         <mesh castShadow>
           <icosahedronGeometry args={[0.3, 1]} />

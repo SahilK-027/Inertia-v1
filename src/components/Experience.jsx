@@ -7,7 +7,7 @@ import Player from "./Player";
 export default function Experience() {
   return (
     <>
-      <Physics debug>
+      <Physics debug={false}>
         <Lights />
         <Level obstacleCount={5} />
         <Player />
