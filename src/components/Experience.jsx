@@ -1,14 +1,16 @@
 import Lights from "./Lights";
 import Level from "./Level";
 import { Physics } from "@react-three/rapier";
+import Player from "./Player";
 
 // Rest of your Experience component remains unchanged
 export default function Experience() {
   return (
     <>
-      <Lights />
       <Physics debug>
-        <Level obstacleCount={5}/>
+        <Lights />
+        <Level obstacleCount={5} />
+        <Player />
       </Physics>
     </>
   );

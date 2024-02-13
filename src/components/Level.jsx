@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { CuboidCollider, RigidBody } from "@react-three/rapier";
 import { useGLTF } from "@react-three/drei";
+import { useFrame } from "@react-three/fiber";
 
 const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
 
@@ -58,6 +59,23 @@ const BlockEnd = ({ positionProp = [0, 0, 0] }) => {
 const BlockObstacle = ({ positionProp = [0, 0, 0], obstaclePosition }) => {
   const blockHeight = 0.2,
     blockSize = 4;
+
+  const obstacle = useRef();
+
+  const [timeOffset] = useState(() => {
+    return Math.random() * Math.PI * 2;
+  });
+
+  useFrame((state) => {
+    const time = state.clock.getElapsedTime();
+    const x_axis = Math.sin(time + timeOffset) * 1.25;
+    obstacle.current.setNextKinematicTranslation({
+      x: positionProp[0] + x_axis,
+      y: positionProp[1] + 0.75,
+      z: positionProp[2],
+    });
+  });
+
   return (
     <group position={positionProp}>
       <mesh
@@ -75,6 +93,7 @@ const BlockObstacle = ({ positionProp = [0, 0, 0], obstaclePosition }) => {
         position={
           obstaclePosition === "left" ? [-1.25, 0.75, 0] : [1.25, 0.75, 0]
         }
+        ref={obstacle}
       >
         <mesh
           geometry={boxGeometry}
