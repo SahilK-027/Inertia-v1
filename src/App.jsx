@@ -2,9 +2,9 @@
 import Experience from "./components/Experience";
 import { Canvas } from "@react-three/fiber";
 import { Perf } from "r3f-perf";
-import { OrbitControls } from "@react-three/drei";
 import { KeyboardControls } from "@react-three/drei";
 
+import Interface from "./components/Interface";
 const App = () => {
   return (
     <>
@@ -28,6 +28,7 @@ const App = () => {
           <Perf />
           <Experience />
         </Canvas>
+        <Interface />
       </KeyboardControls>
     </>
   );
