@@ -42,13 +42,15 @@ const BlockEnd = ({ positionProp = [0, 0, 0] }) => {
     blockSize = 4;
   return (
     <group position={positionProp}>
-      <mesh
-        geometry={boxGeometry}
-        receiveShadow
-        position={[0, 0, 0]}
-        scale={[blockSize, blockHeight, blockSize]}
-        material={floor1Material}
-      ></mesh>
+      <RigidBody type="fixed">
+        <mesh
+          geometry={boxGeometry}
+          receiveShadow
+          position={[0, 0, 0]}
+          scale={[blockSize, blockHeight, blockSize]}
+          material={floor1Material}
+        ></mesh>
+      </RigidBody>
       <RigidBody type="fixed" colliders="hull" restitution={0.2} friction={0}>
         <primitive position={[0, 0, 0]} object={scene} scale={0.025} />
       </RigidBody>
@@ -85,7 +87,6 @@ const BlockObstacle = ({ positionProp = [0, 0, 0], obstaclePosition }) => {
         scale={[blockSize, blockHeight, blockSize]}
         material={floor2Material}
       ></mesh>
-
       <RigidBody
         type="kinematicPosition"
         restitution={0.2}
