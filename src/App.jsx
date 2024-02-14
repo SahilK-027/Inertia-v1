@@ -25,7 +25,6 @@ const App = () => {
             position: [2.5, 4, 6],
           }}
         >
-          <Perf />
           <Experience />
         </Canvas>
         <Interface />

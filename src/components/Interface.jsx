@@ -1,21 +1,65 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { useKeyboardControls } from "@react-three/drei";
+import useGame from "../stores/useGame";
+import { addEffect } from "@react-three/fiber";
 
 const Interface = () => {
+  const time = useRef();
+
+  useEffect(() => {
+    const unsubscribeEffect = addEffect(() => {
+      const state = useGame.getState();
+
+      let elapsedTime = 0;
+
+      if (state.phase === "playing") {
+        elapsedTime = Date.now() - state.startTime;
+      } 
+      else if (state.phase === "ended") {
+        elapsedTime = state.endTime - state.startTime;
+      }
+
+      elapsedTime /= 1000; // Convert to seconds
+
+      // We only want two decimals of precision
+      elapsedTime = elapsedTime.toFixed(2);
+
+      if(time.current) {
+        time.current.textContent = elapsedTime;
+      }
+    });
+
+    return () => {
+      unsubscribeEffect();
+    };
+  }, []);
+
   const forward = useKeyboardControls((state) => state.forward);
   const backward = useKeyboardControls((state) => state.backward);
   const leftward = useKeyboardControls((state) => state.leftward);
   const rightward = useKeyboardControls((state) => state.rightward);
-  console.log(forward, backward, leftward, rightward);
+
+  const restart = useGame((state) => state.restart);
+  const phase = useGame((state) => state.phase);
+
+
   return (
     <>
       <div className="interFace">
-        <div className="time">0.00</div>
-        <div className="win">You Win</div>
-
-        <div className="restart">
-          <button className="restartButton">Play Again!</button>
+        <div ref={time} className="time">
+          0.00
         </div>
+
+        {phase === "ended" && (
+          <>
+            <div className="win">You Win</div>
+            <div className="restart">
+              <button onClick={restart} className="restartButton">
+                Play Again!
+              </button>
+            </div>
+          </>
+        )}
 
         <div className="controls">
           <div className="raw">
@@ -35,7 +79,6 @@ const Interface = () => {
             </div>
           </div>
         </div>
-        
       </div>
     </>
   );

@@ -3,19 +3,51 @@ import * as THREE from "three";
 import { CuboidCollider, RigidBody } from "@react-three/rapier";
 import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
+import { Float, Text } from "@react-three/drei";
 
 const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
 
-const floor1Material = new THREE.MeshStandardMaterial({ color: "limegreen" });
-const floor2Material = new THREE.MeshStandardMaterial({ color: "greenyellow" });
-const obstacleMaterial = new THREE.MeshStandardMaterial({ color: "orangered" });
-const wallMaterial = new THREE.MeshStandardMaterial({ color: "slategrey" });
+const floor1Material = new THREE.MeshStandardMaterial({
+  color: "#111111",
+  metalness: 0,
+  roughness: 0,
+});
+const floor2Material = new THREE.MeshStandardMaterial({
+  color: "#222222",
+  metalness: 0,
+  roughness: 0,
+});
+const obstacleMaterial = new THREE.MeshStandardMaterial({
+  color: "#ff0000",
+  metalness: 0,
+  roughness: 1,
+});
+const wallMaterial = new THREE.MeshStandardMaterial({
+  color: "#887777",
+  metalness: 0,
+  roughness: 0,
+});
 
 const BlockStart = ({ positionProp = [0, 0, 0] }) => {
   const blockHeight = 0.2,
     blockSize = 4;
   return (
     <group position={positionProp}>
+      <Float floatIntensity={0.25} rotationIntensity={0.25}>
+        <Text
+          font="./bebas-neue-v9-latin-regular.woff"
+          scale={0.5}
+          maxWidth={0.25}
+          lineHeight={0.75}
+          textAlign="right"
+          position={[0.8, 0.8, 0]}
+          rotation-y={-0.5}
+        >
+          The Inertia
+          <meshBasicMaterial toneMapped={false} />
+        </Text>
+      </Float>
+
       <mesh
         geometry={boxGeometry}
         receiveShadow
@@ -114,21 +146,24 @@ const Walls = ({ length }) => {
       <RigidBody type="fixed" restitution={0.2} friction={0}>
         {/* Right Wall */}
         <mesh
-          position={[2.15, 0.9, -(length * 2) + 2]} scale={[0.3, 2.2, 4 * length]}
+          position={[2.15, 0.9, -(length * 2) + 2]}
+          scale={[0.3, 2.2, 4 * length]}
           geometry={boxGeometry}
           material={wallMaterial}
           castShadow
         />
         {/* Left Wall */}
         <mesh
-          position={[-1 * 2.15, 0.9, -(length * 2) + 2]} scale={[0.3, 2.2, 4 * length]}
+          position={[-1 * 2.15, 0.9, -(length * 2) + 2]}
+          scale={[0.3, 2.2, 4 * length]}
           geometry={boxGeometry}
           material={wallMaterial}
           receiveShadow
         />
         {/* End Wall */}
         <mesh
-          position={[0, 0.9, -(length * 4) + 2]} scale={[4, 2.2, 0.3]}
+          position={[0, 0.9, -(length * 4) + 2]}
+          scale={[4, 2.2, 0.3]}
           geometry={boxGeometry}
           material={wallMaterial}
           receiveShadow
